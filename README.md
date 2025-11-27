@@ -1,78 +1,142 @@
 
-<header>
-  <h1>Mokshagna Guntamadugu</h1>
-  <p>Data Analyst | Power BI | SQL | Python | Microsoft Fabric | Snowflake</p>
-  <p>Email: gmokshagna2001@gmail.com | Phone: +91 8985581824</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mokshagna Guntamadugu | Data Analyst Portfolio</title>
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="logo">Mokshagna G</div>
+    <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><button id="theme-toggle">🌙</button></li>
+    </ul>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero">
+    <h1>Hello, I'm <span>Mokshagna Guntamadugu</span></h1>
+    <p>Data Analyst • BI Engineer • GenAI & Agentic AI Developer</p>
+
+    <a class="btn" href="assets/resume.pdf" download>Download Resume</a>
+
+    <div class="copilot-badge">
+        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" />
+        <p>Built with GitHub Copilot Assistance</p>
+    </div>
 </header>
 
-<section>
-  <h2>About Me</h2>
-  <p>I am a Data Analyst with strong experience in BI dashboards, data modeling, 
-  and building scalable data pipelines using Power BI, SQL, Python, Microsoft Fabric, Snowflake, 
-  Azure Data Factory, Databricks, and PySpark. I specialize in turning data into actionable insights.</p>
+<!-- About Section -->
+<section id="about" class="section">
+    <h2>About Me</h2>
+    <p>
+        I am a Data Analyst with strong experience in BI dashboards, data modeling,
+        and scalable data pipelines using Power BI, SQL, Python, Fabric, Snowflake, ADF, and Databricks.
+        I also build <strong>GenAI and Agentic AI systems</strong> that automate insights, reporting,
+        and productivity workflows for businesses.
+    </p>
+
+    <p>
+        My work focuses on transforming raw data into automated, intelligent, 
+        and actionable insights with Power BI, Python, and AI agents.  
+    </p>
 </section>
 
-<section>
-  <h2>Skills</h2>
-  <ul>
-    <li><b>BI:</b> Power BI, Tableau, Fabric, Snowflake</li>
-    <li><b>Data Engineering:</b> ADF, PySpark, Databricks, Hadoop, ETL Pipelines</li>
-    <li><b>Programming:</b> Python, SQL, DAX, M Language, PowerShell</li>
-    <li><b>ML & Analytics:</b> scikit-learn, Pandas, NumPy</li>
-    <li><b>Automation:</b> Power Automate, Power Apps</li>
-  </ul>
+<!-- Skills Section -->
+<section id="skills" class="section">
+    <h2>Skills</h2>
+
+    <div class="skills-grid">
+        <div class="skill-card">
+            <h3>Business Intelligence</h3>
+            <p>Power BI, Tableau, Microsoft Fabric, Snowflake, DAX, M Query</p>
+        </div>
+
+        <div class="skill-card">
+            <h3>Data Engineering</h3>
+            <p>ADF, Databricks, PySpark, ETL Pipelines, Lakehouse</p>
+        </div>
+
+        <div class="skill-card">
+            <h3>Programming</h3>
+            <p>Python, SQL, PowerShell</p>
+        </div>
+
+        <div class="skill-card">
+            <h3>AI & Machine Learning</h3>
+            <p>GenAI, Agentic AI, scikit-learn, LangChain, Azure OpenAI</p>
+        </div>
+
+        <div class="skill-card">
+            <h3>Automation</h3>
+            <p>Power Automate, AI Builder, REST APIs</p>
+        </div>
+    </div>
 </section>
 
-<section>
-  <h2>Experience</h2>
+<!-- Projects Section -->
+<section id="projects" class="section">
+    <h2>Featured Projects</h2>
 
-  <div class="project">
-    <h3>Accenture – Data Analyst (Feb 2024 – Present)</h3>
-    <ul>
-      <li>Built Power BI/Tableau dashboards improving KPI visibility.</li>
-      <li>Automated reports with Python & Power Automate (saved 15+ hours/month).</li>
-      <li>Created ADF pipelines connecting SQL Server → Snowflake → Databricks.</li>
-      <li>Optimized Fabric models enabling faster, self-service reporting.</li>
-      <li>Developed SQL queries and DAX measures for insights.</li>
-    </ul>
-  </div>
+    <div class="projects-grid">
 
-  <div class="project">
-    <h3>TalentSprint – Junior Data Scientist (May 2023 – Nov 2023)</h3>
-    <ul>
-      <li>Built regression & classification ML models.</li>
-      <li>Analyzed datasets using Pandas, NumPy & Matplotlib.</li>
-      <li>Supported PySpark & Hadoop-based big data pipelines.</li>
-      <li>Improved SQL queries and ETL workflows.</li>
-    </ul>
-  </div>
+        <div class="project-card">
+            <h3>GenAI Insight Agent for Power BI</h3>
+            <p>
+                Agentic AI bot built using Python + OpenAI + Fabric that reads Power BI datasets,
+                generates automated insights, and answers ad-hoc business questions.
+            </p>
+            <a href="#" class="btn-small">View Code</a>
+        </div>
+
+        <div class="project-card">
+            <h3>Full Data Pipeline: SQL → Snowflake → Fabric</h3>
+            <p>Designed real-time ETL pipeline using ADF, Databricks & Fabric Lakehouse.</p>
+            <a href="#" class="btn-small">View Code</a>
+        </div>
+
+        <div class="project-card">
+            <h3>Agentic Data Extractor (AI + Automation)</h3>
+            <p>
+                Autonomous agent that extracts data from PDFs/emails, cleans it, 
+                loads it to Fabric, and refreshes Power BI.
+            </p>
+            <a href="#" class="btn-small">View Code</a>
+        </div>
+
+        <div class="project-card">
+            <h3>Churn Prediction ML Model</h3>
+            <p>Built ML pipeline integrated into Power BI for predictive analytics.</p>
+            <a href="#" class="btn-small">View Code</a>
+        </div>
+
+    </div>
 </section>
 
-<section>
-  <h2>Certifications</h2>
-  <ul>
-    <li>PL-300 – Power BI Data Analyst</li>
-    <li>DP-600 – Fabric Analytics Engineer</li>
-    <li>DP-700 – Microsoft Fabric Data Engineer</li>
-  </ul>
-</section>
+<!-- Contact Section -->
+<section id="contact" class="section">
+    <h2>Contact</h2>
 
-<section>
-  <h2>Education</h2>
-  <p><b>B.Tech in Computer Science (Honors)</b> — Chandigarh University (2019–2023)</p>
-</section>
+    <p>Email: <strong>gmokshagna2001@gmail.com</strong></p>
+    <p>Phone: <strong>+91 8985581824</strong></p>
 
-<section>
-  <h2>Resume</h2>
-  <p><a href="/Mokshagna- (4).pdf" target="_blank">Download my resume (PDF)</a></p>
-  <!-- The link above points to the file name after uploading the PDF to the repo root -->
+    <a class="btn" href="mailto:gmokshagna2001@gmail.com">Reach Out</a>
 </section>
 
 <footer>
-  <p>© 2025 Mokshagna. All Rights Reserved.</p>
+    © 2025 Mokshagna. All Rights Reserved.
 </footer>
+
 </body>
 </html>
-HTML
-
 
