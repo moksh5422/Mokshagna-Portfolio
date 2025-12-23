@@ -2,28 +2,26 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    backgroun* {
-    box-sizing: border-box;
-}
-
-body {
-    line-height: 1.7;
-}
-d: var(--bg);
+    background-color: var(--bg);
     color: var(--text);
-    transition: 0.3s;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+
+/* DEFAULT = DARK MODE */
 :root {
+    --bg: #0f0f0f;
+    --text: #eaeaea;
+    --card: #1c1c1c;
+}
+
+/* LIGHT MODE */
+.light {
     --bg: #ffffff;
     --text: #111;
     --card: #f2f2f2;
 }
 
-.dark {
-    --bg: #111;
-    --text: #eaeaea;
-    --card: #1c1c1c;
 }
 
 /* Navbar */
@@ -101,6 +99,9 @@ d: var(--bg);
 .skill-card:hover, .project-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.skill-card, .project-card {
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
 
