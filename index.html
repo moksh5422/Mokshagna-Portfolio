@@ -1,130 +1,155 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mokshagna Guntamadugu | Data Analyst Portfolio</title>
-
-    <link rel="stylesheet" href="./style.css" />
-    <script defer src="./script.js"></script>
-</head>
-
-<body>
-
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="logo">Mokshagna G</div>
-    <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#reports">Power BI</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><button id="theme-toggle">☀️</button></li>
-    </ul>
-</nav>
-
-<!-- HERO -->
 <header class="hero">
-    <h1>Hello, I'm <span>Mokshagna Guntamadugu</span></h1>
-    <p>Data Analyst • BI Engineer • GenAI & Agentic AI Developer</p>
-    <a class="btn" href="assets/resume.pdf" download>Download Resume</a>
+  <h1>Hello, I'm <span>Mokshagna Guntamadugu</span></h1>
+  <p>
+    Data Analyst • BI Engineer • GenAI & Agentic AI Practitioner
+  </p>
+
+  <p style="max-width:720px;margin:20px auto;opacity:0.9;">
+    I design business intelligence systems, scalable data pipelines, 
+    and AI-powered analytics solutions using Power BI, Microsoft Fabric, 
+    Snowflake, Python, and Agentic AI.
+  </p>
+
+  <a class="btn" href="assets/resume.pdf" download>Download Resume</a>
 </header>
-
-<!-- ABOUT -->
 <section id="about" class="section">
-    <h2>About Me</h2>
-    <p>
-        Data Analyst with strong experience in BI dashboards, data modeling,
-        scalable pipelines, and <strong>GenAI & Agentic AI systems</strong>.
-    </p>
-    <p>
-        I specialize in Power BI, Microsoft Fabric, Snowflake, Python, and
-        Responsible AI–driven analytics for decision-making.
-    </p>
-</section>
+  <h2>About Me</h2>
 
-<!-- SKILLS -->
+  <p>
+    I am a Data Analyst with hands-on experience in building 
+    production-grade BI dashboards, data models, and automated 
+    analytics workflows across enterprise environments.
+  </p>
+
+  <p>
+    My work spans Power BI and Tableau dashboards, Microsoft Fabric 
+    lakehouse architectures, Snowflake integrations, and Python-driven 
+    automation. Recently, I have been working on <strong>GenAI and 
+    Agentic AI systems</strong> to automate insights, reporting, and 
+    decision-support workflows.
+  </p>
+
+  <p>
+    I focus on transforming raw, fragmented data into reliable, 
+    governed, and actionable intelligence for business stakeholders.
+  </p>
+</section>
 <section id="skills" class="section">
-    <h2>Skills</h2>
+  <h2>Technical Skills</h2>
 
-    <div class="skills-grid">
-        <div class="skill-card">Power BI • Fabric • Snowflake • DAX</div>
-        <div class="skill-card">ADF • Databricks • PySpark • ETL</div>
-        <div class="skill-card">Python • SQL • PowerShell</div>
-        <div class="skill-card">GenAI • LangChain • Azure OpenAI</div>
-        <div class="skill-card">Power Automate • REST APIs</div>
+  <div class="skills-grid">
+
+    <div class="skill-card">
+      <h3>BI & Visualization</h3>
+      <p>
+        Power BI, Tableau, Microsoft Fabric, Snowflake, 
+        DAX, M Query
+      </p>
     </div>
-</section>
 
-<!-- PROJECTS -->
+    <div class="skill-card">
+      <h3>Data Engineering</h3>
+      <p>
+        Azure Data Factory, Databricks, PySpark, 
+        ETL Pipelines, Delta Lake, Hadoop
+      </p>
+    </div>
+
+    <div class="skill-card">
+      <h3>Programming</h3>
+      <p>
+        Python, SQL, PowerShell, Pandas, NumPy
+      </p>
+    </div>
+
+    <div class="skill-card">
+      <h3>Analytics & Machine Learning</h3>
+      <p>
+        Scikit-learn, Regression, Classification, 
+        Feature Engineering, Model Evaluation
+      </p>
+    </div>
+
+    <div class="skill-card">
+      <h3>Automation & AI</h3>
+      <p>
+        Power Automate, Power Apps, GenAI, 
+        Agentic AI, LangChain, Azure OpenAI
+      </p>
+    </div>
+
+  </div>
+</section>
+<section id="certifications" class="section">
+  <h2>Certifications</h2>
+
+  <div class="projects-grid">
+
+    <div class="project-card highlight">
+      <h3>Reinvention with Agentic AI</h3>
+      <p>
+        Practical certification focused on building autonomous, 
+        multi-step AI agents for analytics, automation, and 
+        decision-support systems.
+      </p>
+    </div>
+
+    <div class="project-card">
+      <h3>PL-300 – Power BI Data Analyst</h3>
+      <p>Microsoft Certified</p>
+    </div>
+
+    <div class="project-card">
+      <h3>DP-600 – Fabric Analytics Engineer</h3>
+      <p>Microsoft Certified</p>
+    </div>
+
+    <div class="project-card">
+      <h3>DP-700 – Fabric Data Engineer</h3>
+      <p>Microsoft Certified</p>
+    </div>
+
+  </div>
+</section>
 <section id="projects" class="section">
-    <h2>Featured Projects</h2>
+  <h2>Featured Projects</h2>
 
-    <div class="projects-grid">
+  <div class="projects-grid">
 
-        <div class="project-card highlight">
-            <h3>Responsible AI Governance Dashboard ⭐</h3>
-            <p>
-                Power BI dashboard for model explainability, bias detection,
-                risk scoring, and AI governance metrics.
-            </p>
-            <span class="tag">Responsible AI</span>
-        </div>
-
-        <div class="project-card">
-            <h3>GenAI Insight Agent for Power BI</h3>
-            <p>
-                Agentic AI system that reads datasets and answers
-                business questions automatically.
-            </p>
-        </div>
-
-        <div class="project-card">
-            <h3>Agentic Data Extractor</h3>
-            <p>
-                Autonomous agent that extracts data from PDFs/emails
-                and refreshes Power BI dashboards.
-            </p>
-        </div>
-
-        <div class="project-card">
-            <h3>Churn Prediction ML Model</h3>
-            <p>
-                End-to-end ML pipeline integrated into Power BI for
-                predictive analytics.
-            </p>
-        </div>
-
+    <div class="project-card highlight">
+      <h3>Responsible AI Governance Dashboard</h3>
+      <p>
+        Power BI dashboard designed to monitor model explainability, 
+        bias indicators, risk scoring, and governance KPIs 
+        for enterprise AI systems.
+      </p>
     </div>
-</section>
 
-<!-- POWER BI REPORTS -->
-<section id="reports" class="section">
-    <h2>Power BI Reports</h2>
-    <p>Selected high-impact dashboards (dark-mode safe)</p>
-
-    <div class="report-container">
-        <!-- Replace src with your Power BI Public embed -->
-        <iframe
-            src="https://app.powerbi.com/view?r=YOUR_EMBED_LINK"
-            frameborder="0"
-            allowFullScreen="true">
-        </iframe>
+    <div class="project-card">
+      <h3>GenAI Insight Agent for Power BI</h3>
+      <p>
+        Agentic AI system that reads Power BI datasets, 
+        generates insights automatically, and answers 
+        ad-hoc business questions.
+      </p>
     </div>
+
+    <div class="project-card">
+      <h3>Agentic Data Extractor & Automation</h3>
+      <p>
+        Autonomous agent that extracts structured data 
+        from PDFs and emails, loads it into Fabric, 
+        and refreshes dashboards automatically.
+      </p>
+    </div>
+
+    <div class="project-card">
+      <h3>Churn Prediction ML Pipeline</h3>
+      <p>
+        End-to-end machine learning workflow integrated 
+        into Power BI for predictive analytics.
+      </p>
+    </div>
+
+  </div>
 </section>
-
-<!-- CONTACT -->
-<section id="contact" class="section">
-    <h2>Contact</h2>
-    <p>Email: <strong>gmokshagna2001@gmail.com</strong></p>
-    <p>Phone: <strong>+91 8985581824</strong></p>
-    <a class="btn" href="mailto:gmokshagna2001@gmail.com">Reach Out</a>
-</section>
-
-<footer>
-    © 2025 Mokshagna. All Rights Reserved.
-</footer>
-
-</body>
-</html>
