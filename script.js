@@ -1,12 +1,12 @@
 const toggle = document.getElementById('theme-toggle');
 
-// Default: DARK (no class needed)
+// Page starts in DARK mode
 toggle.textContent = "☀️";
 
 toggle.addEventListener('click', () => {
-    document.body.classList.toggle('light');
+    document.body.classList.toggle('dark');
 
-    const isLight = document.body.classList.contains('light');
-    toggle.textContent = isLight ? "🌙" : "☀️";
+    toggle.textContent =
+        document.body.classList.contains('dark') ? "☀️" : "🌙";
 });
 
