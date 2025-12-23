@@ -4,131 +4,121 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mokshagna Guntamadugu | Data Analyst Portfolio</title>
-    <link rel="stylesheet" href="style.css" />
-    <script defer src="script.js"></script>
+
+    <link rel="stylesheet" href="./style.css" />
+    <script defer src="./script.js"></script>
 </head>
 
-<body class="dark">
+<body>
 
-<!-- Navigation -->
+<!-- NAVBAR -->
 <nav class="navbar">
     <div class="logo">Mokshagna G</div>
     <ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#projects">Projects</a></li>
+        <li><a href="#reports">Power BI</a></li>
         <li><a href="#contact">Contact</a></li>
         <li><button id="theme-toggle">☀️</button></li>
     </ul>
 </nav>
 
-<!-- Hero Section -->
+<!-- HERO -->
 <header class="hero">
     <h1>Hello, I'm <span>Mokshagna Guntamadugu</span></h1>
     <p>Data Analyst • BI Engineer • GenAI & Agentic AI Developer</p>
-
     <a class="btn" href="assets/resume.pdf" download>Download Resume</a>
-
-    <div class="copilot-badge">
-        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" />
-        <p>Built with GitHub Copilot Assistance</p>
-    </div>
 </header>
 
-<!-- About Section -->
+<!-- ABOUT -->
 <section id="about" class="section">
     <h2>About Me</h2>
     <p>
-        I am a Data Analyst with strong experience in BI dashboards, data modeling,
-        and scalable data pipelines using Power BI, SQL, Python, Fabric, Snowflake, ADF, and Databricks.
-        I also build <strong>GenAI and Agentic AI systems</strong> that automate insights, reporting,
-        and productivity workflows for businesses.
+        Data Analyst with strong experience in BI dashboards, data modeling,
+        scalable pipelines, and <strong>GenAI & Agentic AI systems</strong>.
     </p>
-
     <p>
-        My work focuses on transforming raw data into automated, intelligent,
-        and actionable insights with Power BI, Python, and AI agents.
+        I specialize in Power BI, Microsoft Fabric, Snowflake, Python, and
+        Responsible AI–driven analytics for decision-making.
     </p>
 </section>
 
-<!-- Skills Section -->
+<!-- SKILLS -->
 <section id="skills" class="section">
     <h2>Skills</h2>
 
     <div class="skills-grid">
-        <div class="skill-card">
-            <h3>Business Intelligence</h3>
-            <p>Power BI, Tableau, Microsoft Fabric, Snowflake, DAX, M Query</p>
-        </div>
-
-        <div class="skill-card">
-            <h3>Data Engineering</h3>
-            <p>ADF, Databricks, PySpark, ETL Pipelines, Lakehouse</p>
-        </div>
-
-        <div class="skill-card">
-            <h3>Programming</h3>
-            <p>Python, SQL, PowerShell</p>
-        </div>
-
-        <div class="skill-card">
-            <h3>AI & Machine Learning</h3>
-            <p>GenAI, Agentic AI, scikit-learn, LangChain, Azure OpenAI</p>
-        </div>
-
-        <div class="skill-card">
-            <h3>Automation</h3>
-            <p>Power Automate, AI Builder, REST APIs</p>
-        </div>
+        <div class="skill-card">Power BI • Fabric • Snowflake • DAX</div>
+        <div class="skill-card">ADF • Databricks • PySpark • ETL</div>
+        <div class="skill-card">Python • SQL • PowerShell</div>
+        <div class="skill-card">GenAI • LangChain • Azure OpenAI</div>
+        <div class="skill-card">Power Automate • REST APIs</div>
     </div>
 </section>
 
-<!-- Projects Section -->
+<!-- PROJECTS -->
 <section id="projects" class="section">
     <h2>Featured Projects</h2>
 
     <div class="projects-grid">
 
+        <div class="project-card highlight">
+            <h3>Responsible AI Governance Dashboard ⭐</h3>
+            <p>
+                Power BI dashboard for model explainability, bias detection,
+                risk scoring, and AI governance metrics.
+            </p>
+            <span class="tag">Responsible AI</span>
+        </div>
+
         <div class="project-card">
             <h3>GenAI Insight Agent for Power BI</h3>
             <p>
-                Agentic AI bot built using Python + OpenAI + Fabric that reads Power BI datasets,
-                generates automated insights, and answers ad-hoc business questions.
+                Agentic AI system that reads datasets and answers
+                business questions automatically.
             </p>
-            <a href="#" class="btn-small">View Code</a>
         </div>
 
         <div class="project-card">
-            <h3>Full Data Pipeline: SQL → Snowflake → Fabric</h3>
-            <p>Designed real-time ETL pipeline using ADF, Databricks & Fabric Lakehouse.</p>
-            <a href="#" class="btn-small">View Code</a>
-        </div>
-
-        <div class="project-card">
-            <h3>Agentic Data Extractor (AI + Automation)</h3>
+            <h3>Agentic Data Extractor</h3>
             <p>
-                Autonomous agent that extracts data from PDFs/emails, cleans it,
-                loads it to Fabric, and refreshes Power BI.
+                Autonomous agent that extracts data from PDFs/emails
+                and refreshes Power BI dashboards.
             </p>
-            <a href="#" class="btn-small">View Code</a>
         </div>
 
         <div class="project-card">
             <h3>Churn Prediction ML Model</h3>
-            <p>Built ML pipeline integrated into Power BI for predictive analytics.</p>
-            <a href="#" class="btn-small">View Code</a>
+            <p>
+                End-to-end ML pipeline integrated into Power BI for
+                predictive analytics.
+            </p>
         </div>
 
     </div>
 </section>
 
-<!-- Contact Section -->
+<!-- POWER BI REPORTS -->
+<section id="reports" class="section">
+    <h2>Power BI Reports</h2>
+    <p>Selected high-impact dashboards (dark-mode safe)</p>
+
+    <div class="report-container">
+        <!-- Replace src with your Power BI Public embed -->
+        <iframe
+            src="https://app.powerbi.com/view?r=YOUR_EMBED_LINK"
+            frameborder="0"
+            allowFullScreen="true">
+        </iframe>
+    </div>
+</section>
+
+<!-- CONTACT -->
 <section id="contact" class="section">
     <h2>Contact</h2>
-
     <p>Email: <strong>gmokshagna2001@gmail.com</strong></p>
     <p>Phone: <strong>+91 8985581824</strong></p>
-
     <a class="btn" href="mailto:gmokshagna2001@gmail.com">Reach Out</a>
 </section>
 
@@ -138,4 +128,3 @@
 
 </body>
 </html>
-
