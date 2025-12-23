@@ -2,7 +2,14 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: var(--bg);
+    backgroun* {
+    box-sizing: border-box;
+}
+
+body {
+    line-height: 1.7;
+}
+d: var(--bg);
     color: var(--text);
     transition: 0.3s;
 }
