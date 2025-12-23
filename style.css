@@ -28,11 +28,11 @@ d: var(--bg);
 
 /* Navbar */
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px;
-    background: var(--card);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
+
 
 .nav-links {
     list-style: none;
@@ -51,18 +51,31 @@ d: var(--bg);
 }
 
 .btn {
-    background: #0078ff;
+    background: linear-gradient(135deg, #0078ff, #00c6ff);
     color: white;
-    padding: 12px 24px;
-    border-radius: 6px;
+    padding: 14px 28px;
+    border-radius: 8px;
     text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,120,255,0.3);
 }
 
 .btn-small {
+    display: inline-block;
+    margin-top: 10px;
     border: 1px solid #0078ff;
     padding: 8px 16px;
+    border-radius: 6px;
     text-decoration: none;
+    color: #0078ff;
 }
+
 
 /* Sections */
 .section {
@@ -80,9 +93,16 @@ d: var(--bg);
 
 .skill-card, .project-card {
     background: var(--card);
-    padding: 20px;
-    border-radius: 10px;
+    padding: 24px;
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.skill-card:hover, .project-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
 
 /* Footer */
 footer {
