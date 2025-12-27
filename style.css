@@ -1,70 +1,82 @@
-body {
-  font-family: Arial, sans-serif;
+/* RESET */
+* {
+  box-sizing: border-box;
   margin: 0;
-  line-height: 1.6;
+  padding: 0;
 }
 
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  width: 100%;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* NAVBAR */
 .navbar {
+  background: #111;
+}
+
+.navbar-inner {
   display: flex;
   justify-content: space-between;
-  padding: 16px 32px;
-  background: #111;
+  align-items: center;
+  height: 64px;
+}
+
+.logo {
   color: white;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
 }
 
 .nav-links a {
   color: white;
-  margin-left: 20px;
   text-decoration: none;
 }
 
+/* HERO */
 .hero {
+  padding: 90px 0;
   text-align: center;
-  padding: 90px 20px;
 }
 
 .hero span {
   color: #4f46e5;
 }
 
-.section {
-  padding: 80px 20px;
-  max-width: 1100px;
-  margin: auto;
+.hero-title {
+  margin-top: 10px;
+  opacity: 0.9;
 }
 
-.skills-grid, .projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
+.hero-description {
+  max-width: 800px;
+  margin: 20px auto;
 }
 
-.skill-card, .project-card {
-  padding: 20px;
-  border-radius: 12px;
-  background: #f5f5f5;
+.hero-tech {
+  opacity: 0.85;
 }
 
-.highlight {
-  border-left: 5px solid #4f46e5;
-}
-
-.highlight-section {
-  background: rgba(79,70,229,0.05);
-  border-radius: 12px;
-}
-
-.subtle-section {
-  background: #fafafa;
-  border-radius: 12px;
-}
-
+/* BUTTONS */
 .btn {
+  display: inline-block;
   padding: 12px 18px;
   border-radius: 8px;
   text-decoration: none;
   margin: 10px;
-  display: inline-block;
 }
 
 .primary {
@@ -77,7 +89,46 @@ body {
   color: #4f46e5;
 }
 
+/* SECTIONS */
+.section {
+  padding: 80px 0;
+}
+
+.highlight-section {
+  background: rgba(79, 70, 229, 0.05);
+  border-radius: 12px;
+}
+
+.subtle-section {
+  background: #fafafa;
+  border-radius: 12px;
+}
+
+/* GRIDS */
+.skills-grid,
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* CARDS */
+.skill-card,
+.project-card {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.highlight {
+  border-left: 5px solid #4f46e5;
+}
+
+/* LISTS */
+.project-points {
+  margin-top: 15px;
+}
+
 .project-points li {
   margin-bottom: 8px;
 }
-
