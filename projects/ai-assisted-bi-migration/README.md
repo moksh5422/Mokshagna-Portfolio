@@ -1,192 +1,124 @@
-# AI-Assisted BI Migration
+# Legacy BI Migration Intelligence
 
-A practical engineering pattern for migrating legacy BI workloads to Power BI and Microsoft Fabric when the difficult part is understanding the existing logic, not recreating the charts.
+**Niche problem:** how can AI help engineers understand and migrate poorly documented legacy BI logic without losing enterprise access controls, confidence in the migrated numbers, or acceptable response time?
 
-This project is based on an enterprise migration pattern involving **81 Spotfire reports**, multiple upstream data sources, legacy transformations, calculated fields, filters, business rules, and a move to Power BI and Microsoft Fabric.
+This project documents a sanitized version of an enterprise migration pattern involving **81 Spotfire reports**, multiple upstream data sources, legacy transformations, calculated fields, filters, and business rules, with the target platform being **Power BI and Microsoft Fabric**.
 
-This repository is intentionally sanitized: it contains no client data, proprietary report definitions, credentials, or confidential implementation details. The examples are synthetic and demonstrate the engineering approach.
+The interesting part was not recreating charts. It was building a repeatable way to reason about the old system, protect the information used by the workflow, evaluate AI-assisted decisions, and validate the final result.
 
-## The problem
+> This repository contains synthetic examples only. No client data, proprietary report definitions, credentials, or confidential implementation details are included.
 
-A report migration can look simple from a distance:
+## Three versions of the solution
 
-```text
-Open report -> rebuild in Power BI -> test -> repeat
-```
+### V1 — Understand the legacy workload
 
-That becomes difficult when every report has different dependencies and some important logic is buried inside legacy expressions or transformations.
+The first bottleneck was discovery.
 
-The real questions become:
+Before rebuilding a report, the workflow builds a structured view of its sources, tables, calculations, filters, relationships, and transformations.
 
-- What data sources does this report depend on?
-- Where is each transformation happening today?
-- Is the calculation report logic or data logic?
-- Can the same business rule be reused by other reports?
-- Does the new report produce the same numbers?
-- Which parts can be automated safely, and which need an engineer to review?
+The LLM is used for interpretation tasks such as:
 
-## Approach
+- explaining unfamiliar legacy expressions
+- suggesting an equivalent target transformation
+- grouping similar calculations
+- flagging ambiguous dependencies
 
-The migration is treated as a repeatable engineering workflow rather than 81 separate dashboard rebuilds.
+The model produces a proposal. It does not decide whether the migration is correct.
 
-```text
-Legacy Reports
-      |
-      v
-Report Inventory + Parsing
-      |
-      +-------------------------+
-      |                         |
-      v                         v
-Deterministic Analysis      LLM-assisted Analysis
-      |                    - formula interpretation
-      |                    - transformation mapping
-      |                    - ambiguity detection
-      +------------+------------+
-                   |
-                   v
-             Migration Spec
-                   |
-                   v
-              Human Review
-                   |
-                   v
-          Fabric Transformation
-                   |
-                   v
-            Curated Data Layer
-                   |
-                   v
-          Power BI Semantic Model
-                   |
-                   v
-             Power BI Report
-                   |
-                   v
-             Reconciliation
-                   |
-           +-------+-------+
-           |               |
-           v               v
-         PASS          REVIEW
-```
+`legacy report -> inventory -> dependency map -> transformation map -> migration spec`
 
-## Where AI is useful
+### V2 — Secure the workflow
 
-The LLM is used where interpretation helps:
+Once AI was reading enterprise information, access control became a first-class problem.
 
-- Explaining unfamiliar legacy expressions
-- Suggesting an equivalent target transformation
-- Grouping similar calculations
-- Detecting potentially ambiguous business logic
-- Producing a first-pass migration note
+The security boundary stays in the application rather than the model. Identity and RBAC determine what the caller is allowed to access before an AI or tool request is executed.
 
-The model is **not** treated as the final authority.
+The design also considers:
 
-A proposed mapping can carry a confidence score and a review reason. Low-confidence or ambiguous cases are sent to an engineer rather than being silently accepted.
+- PII detection and redaction
+- approved model endpoints
+- secret management
+- controlled tool/data access
+- input/output guardrails
+- audit-friendly request paths
 
-## Where deterministic code is preferred
+`identity -> authorization -> allowed operation -> AI/tool request`
 
-Some parts of the migration should remain predictable:
+### V3 — Evaluate and improve performance
 
-- Metadata extraction
-- Source/dependency inventory
-- PII checks
-- Data-quality checks
-- Reconciliation
-- Acceptance criteria
-- Migration status tracking
+The next questions were whether the AI was actually helping and whether users could work with the system quickly enough.
 
-This keeps the AI in a supporting role while important acceptance decisions remain testable.
+For the AI side, **RAGAS** is used to evaluate retrieval and answer quality as prompts, models, chunking, and search settings change. Metrics include context recall, answer relevance, and faithfulness.
 
-## Example migration record
+For the migration side, deterministic reconciliation checks compare source and target values such as row counts, aggregates, measures, filters, and distinct counts.
 
-A synthetic report definition can describe a metric like this:
+Latency is considered across the full path:
 
-```json
-{
-  "report": "sales-overview",
-  "metric": "Revenue",
-  "legacy_expression": "SUM(SalesAmount)",
-  "target_layer": "semantic_model",
-  "proposed_expression": "SUM(FactSales[SalesAmount])",
-  "confidence": 0.97,
-  "status": "READY_FOR_REVIEW"
-}
-```
+`request -> retrieval -> context construction -> model call -> response delivery`
 
-For an ambiguous rule, the system should make the uncertainty visible:
+Caching and **SSE streaming** were used as part of the performance work, with an improvement of approximately **250 ms at P95** in the workload described here.
 
-```json
-{
-  "report": "customer-analysis",
-  "metric": "Customer Segment",
-  "target_layer": "fabric-transformation",
-  "status": "REVIEW_REQUIRED",
-  "reason": "Legacy logic refers to an unmapped customer type"
-}
-```
-
-## Validation
-
-The migration should not be accepted because the dashboard looks similar.
-
-The validation layer can compare:
-
-- Row counts
-- Totals and aggregates
-- Distinct counts
-- Filter behavior
-- Null handling
-- Dimension membership
-- Important business measures
-
-Example:
+## Target architecture
 
 ```text
-Report: sales-overview
-
-Rows
-Legacy : 1,245,883
-Target : 1,245,883
-Status : PASS
-
-Revenue
-Legacy : 84,392,112
-Target : 84,392,109
-Status : REVIEW
-
-Region Filter
-Legacy : EMEA
-Target : EMEA
-Status : PASS
+Legacy Spotfire Reports
+          |
+          v
+   Inventory + Parsing
+          |
+     +----+----+
+     |         |
+     v         v
+Deterministic  LLM-assisted
+Analysis       Interpretation
+     |         |
+     +----+----+
+          |
+          v
+    Migration Spec
+          |
+          v
+      Human Review
+          |
+          v
+ Fabric Transformation
+          |
+          v
+   Curated Data Layer
+          |
+          v
+ Power BI Semantic Model
+          |
+          v
+     Power BI Report
+          |
+          v
+      Validation
+       /       \
+     PASS     REVIEW
 ```
 
-A small difference should be surfaced for investigation instead of being hidden by an AI-generated explanation.
+## What the project demonstrates
 
-## Security
+The core idea is simple:
 
-An enterprise implementation should not expose sensitive report content or PII to an unapproved model endpoint.
+> **Turn 81 individual migrations into one repeatable engineering workflow with 81 inputs.**
 
-The production pattern should include approved model endpoints, identity-based access, RBAC, secret management, PII detection/redaction, controlled tool access, logging, and input/output validation.
+AI is one part of the system. The useful outcome comes from combining AI-assisted interpretation with data engineering, RBAC, PII controls, evaluation, deterministic validation, performance work, and human review.
 
-## Project structure
+## Repository structure
 
 ```text
 ai-assisted-bi-migration/
 ├── README.md
 ├── LINKEDIN_POST.md
 ├── docs/
-│   └── migration-workflow.md
+│   ├── version-1-understand.md
+│   ├── version-2-secure.md
+│   └── version-3-evaluate-perform.md
 ├── examples/
 │   └── legacy_report.json
 └── src/
     └── validate/
         └── reconciliation.py
 ```
-
-## What this project demonstrates
-
-> Turn 81 individual migrations into one repeatable migration workflow with 81 inputs.
-
-The value is not the LLM by itself. It comes from combining AI-assisted interpretation with data engineering, validation, security, human review, and a clear separation between source data, transformations, semantic modelling, and reporting.
