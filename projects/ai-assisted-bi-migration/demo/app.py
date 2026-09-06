@@ -1,10 +1,13 @@
 import json
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from .agents import EvaluationAgent, MigrationAgent, SecurityAgent
 
 
 ROOT = Path(__file__).resolve().parent
+load_dotenv(ROOT / ".env")
 
 
 def reconcile(source: dict, target: dict) -> list[dict]:
@@ -31,14 +34,17 @@ def main() -> None:
     security_agent = SecurityAgent()
     evaluation_agent = EvaluationAgent()
 
-    print("=== 1. MIGRATION ANALYSIS AGENT ===")
+    mode = "Azure OpenAI" if migration_agent.llm_enabled else "local deterministic fallback"
+    print(f"AI analysis mode: {mode}")
+
+    print("\n=== 1. MIGRATION ANALYSIS AGENT ===")
     spec = migration_agent.analyze(report)
     print(json.dumps(spec.__dict__, indent=2))
 
     print("\n=== 2. SECURITY AGENT ===")
-    security = security_agent.authorize("migration-engineer", "sample-data")
+    allowed = security_agent.authorize("migration-engineer", "sample-data")
     denied = security_agent.authorize("viewer", "sample-data")
-    print("Allowed request:", json.dumps(security, indent=2))
+    print("Allowed request:", json.dumps(allowed, indent=2))
     print("Denied request:", json.dumps(denied, indent=2))
 
     print("\n=== 3. EVALUATION AGENT ===")
