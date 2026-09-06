@@ -6,11 +6,11 @@ from .models import MigrationSpec
 
 
 class MigrationAgent:
-    """Small, testable agent wrapper.
+    """Analyze a legacy BI report.
 
     With Azure OpenAI configured, the agent asks the model to interpret the
-    legacy report. Without credentials, the demo uses deterministic fallback
-    logic so it is still runnable in VS Code.
+    report. Without credentials, deterministic fallback logic keeps the demo
+    runnable locally in VS Code.
     """
 
     def __init__(self) -> None:
@@ -28,18 +28,17 @@ class MigrationAgent:
         return self._analyze_with_rules(report)
 
     def _analyze_with_rules(self, report: dict[str, Any]) -> MigrationSpec:
-        calculations = []
-        review_items = []
+        calculations: list[dict[str, Any]] = []
+        review_items: list[str] = []
+
         for item in report.get("calculations", []):
             expr = item.get("expression", "")
-            target_layer = "semantic_model" if "SUM(" in expr.upper() else "fabric_transformation"
+            target_layer = (
+                "semantic_model" if "SUM(" in expr.upper() else "fabric_transformation"
+            )
             confidence = 0.95 if target_layer == "semantic_model" else 0.72
             calculations.append(
-                {
-                    **item,
-                    "target_layer": target_layer,
-                    "confidence": confidence,
-                }
+                {**item, "target_layer": target_layer, "confidence": confidence}
             )
             if confidence < 0.80:
                 review_items.append(f"Review calculation: {item.get('name', 'unnamed')}")
@@ -67,10 +66,14 @@ class MigrationAgent:
             api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-10-21"),
         )
 
-        system = """You are a migration analysis agent. Analyze a legacy BI report and return JSON only.\n"
-        "For each calculation, choose target_layer as semantic_model or fabric_transformation.\n"
-        "Give confidence between 0 and 1. Flag ambiguous mappings for human review.\n"
-        "Never claim that an uncertain mapping is correct."""
+        system = (
+            "You are a migration analysis agent. Analyze a legacy BI report and "
+            "return JSON only. For each calculation, choose target_layer as "
+            "semantic_model or fabric_transformation. Give confidence between 0 "
+            "and 1. Flag ambiguous mappings for human review. Never claim that "
+            "an uncertain mapping is correct."
+        )
+
         response = client.chat.completions.create(
             model=self.deployment,
             temperature=0,
@@ -85,6 +88,8 @@ class MigrationAgent:
 
 
 class SecurityAgent:
+    """Enforce access before an AI/tool operation is allowed."""
+
     def authorize(self, role: str, requested_scope: str) -> dict[str, Any]:
         allowed = {
             "migration-engineer": {"report-metadata", "sample-data"},
@@ -101,6 +106,8 @@ class SecurityAgent:
 
 
 class EvaluationAgent:
+    """Decide whether an AI-generated migration spec needs review."""
+
     def review(self, spec: MigrationSpec) -> dict[str, Any]:
         checks = [
             {"name": "confidence_floor", "passed": spec.confidence >= 0.80},
