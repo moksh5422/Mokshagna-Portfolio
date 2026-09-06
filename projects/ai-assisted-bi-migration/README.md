@@ -58,6 +58,58 @@ Latency is considered across the full path:
 
 Caching and **SSE streaming** were used as part of the performance work, with an improvement of approximately **250 ms at P95** in the workload described here.
 
+## Working VS Code demo
+
+The `demo/` folder shows how the migration can be split into small agents and deterministic checks. It is intentionally runnable without an Azure subscription, while also supporting Azure OpenAI when environment variables are configured.
+
+### Agent flow
+
+```text
+Legacy report JSON
+        |
+        v
+Migration Agent
+  - inventory
+  - interpret expressions
+  - propose target layer
+        |
+        v
+Security Agent
+  - identity / role
+  - scope check
+  - allow / deny
+        |
+        v
+Evaluation Agent
+  - confidence floor
+  - review flags
+        |
+        v
+Deterministic Reconciliation
+  - row counts
+  - aggregates
+        |
+        v
+READY / HUMAN REVIEW
+```
+
+### Run locally in VS Code
+
+```bash
+cd demo
+python -m venv .venv
+
+# Windows
+.venv\\Scripts\\activate
+
+pip install -r requirements.txt
+python -m demo.app
+```
+
+The demo works in fallback mode with no API credentials. To run the migration analysis through Azure OpenAI, copy `.env.example` to `.env`, fill in the Azure settings, and export/load those variables before starting the app.
+
+The important design choice is the same as the larger migration: the LLM proposes an interpretation, while authorization and acceptance remain outside the model.
+
 ## Target architecture
 
 ```text
@@ -118,6 +170,14 @@ ai-assisted-bi-migration/
 │   └── version-3-evaluate-perform.md
 ├── examples/
 │   └── legacy_report.json
+├── demo/
+│   ├── __init__.py
+│   ├── app.py
+│   ├── agents.py
+│   ├── models.py
+│   ├── sample_report.json
+│   ├── requirements.txt
+│   └── .env.example
 └── src/
     └── validate/
         └── reconciliation.py
