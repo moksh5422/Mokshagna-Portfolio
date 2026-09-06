@@ -1,71 +1,67 @@
 # LinkedIn Post
 
-I didn’t approach 81 report migrations as a BI migration problem.
+I was working on an 81-report Spotfire to Power BI/Fabric migration.
 
-I approached it as a software engineering problem.
+At first, it looked like a reporting problem.
 
-We had 81 Spotfire reports backed by multiple data sources, legacy transformations, calculated logic, filters, and business rules.
+It turned out to be a much narrower engineering problem:
 
-The obvious approach was:
+**How do you use AI to understand legacy BI logic without making the AI responsible for security, correctness, or production performance?**
 
-**Open report -> understand it -> rebuild it in Power BI -> test it -> repeat.**
+I worked through it in three versions.
 
-That approach does not scale well.
+### V1 — Understand the legacy logic
 
-The difficult part was not creating the Power BI visuals.
+The first bottleneck was discovery.
 
-The difficult part was figuring out:
+Reports had different sources, transformations, calculations, filters, and business rules. Rebuilding them one by one meant repeating the same investigation.
 
-**What does this report actually depend on?**
+I used an LLM to help interpret legacy expressions, suggest target transformations, group similar logic, and flag cases that looked ambiguous.
 
-**Where is this calculation happening?**
+The model produced a proposed mapping. It did not decide that the mapping was correct.
 
-**Which logic belongs in Fabric and which belongs in the semantic model?**
+### V2 — Put security outside the model
 
-**How do we know the migrated report is actually equivalent to the old one?**
+Once AI was working with enterprise information, the next problem was access.
 
-So I started treating the migration as a repeatable engineering workflow rather than a collection of dashboards.
+I added **RBAC, identity-based access, PII handling, and controlled data access** so that permissions were enforced by the application instead of being left to the model.
 
-I built the process around five things:
+That distinction mattered:
 
--> **Inventory:** understand the report, source, calculations, filters and dependencies before development starts.
+**the model can request an operation; the application decides whether it is allowed.**
 
--> **Transformation mapping:** trace legacy transformations and decide where they should live in the new Fabric architecture rather than blindly reproducing them inside Power BI.
+### V3 — Prove it and make it usable
 
--> **AI-assisted analysis:** use an LLM to help interpret legacy expressions, suggest equivalent transformations and flag ambiguous logic.
+Then came two production questions:
 
-The model was not allowed to make the final decision.
+**Is the AI actually helping?**
 
-It produced a proposed mapping, and uncertain cases were sent for review.
+**Is the system fast enough to use?**
 
--> **Validation:** compare the old and new systems using record counts, aggregates, filters, measures and other business-level checks instead of relying on “the dashboard looks right.”
+I used **RAGAS** to evaluate retrieval and answer quality as prompts, chunking, models, and search settings changed.
 
--> **Exception handling:** automate the predictable cases and focus human attention on the reports where dependencies, transformations or results do not reconcile cleanly.
+For the migration itself, deterministic checks compared things like row counts, aggregates, measures, and filters between the old and new systems.
 
-That changed the problem from:
+I also worked on latency across retrieval, context construction, model calls, caching, and response delivery, including **SSE streaming**. The workload saw roughly **250 ms improvement at P95**.
 
-**81 individual migrations**
+The result was a different way of thinking about the migration.
 
-to:
+Not:
 
-**one migration system with 81 inputs.**
+**81 reports to rebuild.**
 
-The important lesson for me was that AI was not the solution by itself.
+But:
 
-The useful part was combining:
+**one repeatable system that can analyse 81 reports, protect the data it touches, measure whether its AI output is useful, and surface the cases that still need an engineer.**
 
-**AI + data engineering + validation + security + human review + production constraints.**
+That is the part of Forward Deployed Engineering I find interesting.
 
-That is how I increasingly think about Forward Deployed Engineering.
-
-The job is not:
-
-> “Here is an LLM. What can we build with it?”
+The hard problem usually isn't “how do I add an LLM?”
 
 It is:
 
-> “Here is a messy business problem. Where can software, data, and AI actually remove the bottleneck?”
+> **Where can AI remove a real bottleneck inside an existing system without creating a bigger problem somewhere else?**
 
-I’ve documented a sanitized version of the approach on GitHub, using synthetic examples rather than any client data.
+I’ve put a sanitized version of the approach on GitHub using synthetic examples only.
 
-#AIEngineering #ForwardDeployedEngineering #DataEngineering #MicrosoftFabric #PowerBI #GenAI #EnterpriseAI
+#AIEngineering #ForwardDeployedEngineering #EnterpriseAI #RAG #MicrosoftFabric #PowerBI #DataEngineering
