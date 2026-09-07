@@ -1,10 +1,10 @@
 # Legacy BI Migration Intelligence
 
-**Niche problem:** how can AI help engineers understand and migrate poorly documented legacy BI logic without losing enterprise access controls, confidence in the migrated numbers, or acceptable response time?
+**Niche problem:** how can AI help engineers understand and migrate poorly documented legacy BI logic without making the model responsible for security, correctness, or production performance?
 
-This project documents a sanitized version of an enterprise migration pattern involving **81 Spotfire reports**, multiple upstream data sources, legacy transformations, calculated fields, filters, and business rules, with the target platform being **Power BI and Microsoft Fabric**.
+This project documents a sanitized enterprise migration pattern involving **81 Spotfire reports**, multiple upstream sources, legacy transformations, calculated fields, filters, and business rules, with **Power BI and Microsoft Fabric** as the target platform.
 
-The interesting part was not recreating charts. It was building a repeatable way to reason about the old system, protect the information used by the workflow, evaluate AI-assisted decisions, and validate the final result.
+The goal is not to make an LLM “migrate dashboards.” The goal is to build a workflow that reduces repetitive investigation while keeping permissions, validation, and release decisions under engineering control.
 
 > This repository contains synthetic examples only. No client data, proprietary report definitions, credentials, or confidential implementation details are included.
 
@@ -12,91 +12,119 @@ The interesting part was not recreating charts. It was building a repeatable way
 
 ### V1 — Understand the legacy workload
 
-The first bottleneck was discovery.
+Before rebuilding a report, the workflow creates a structured inventory of sources, tables, calculations, filters, relationships, and transformations.
 
-Before rebuilding a report, the workflow builds a structured view of its sources, tables, calculations, filters, relationships, and transformations.
-
-The LLM is used for interpretation tasks such as:
-
-- explaining unfamiliar legacy expressions
-- suggesting an equivalent target transformation
-- grouping similar calculations
-- flagging ambiguous dependencies
+An LLM is used where interpretation is useful: explaining unfamiliar expressions, suggesting target transformations, grouping similar logic, and flagging ambiguity.
 
 The model produces a proposal. It does not decide whether the migration is correct.
 
-`legacy report -> inventory -> dependency map -> transformation map -> migration spec`
+`legacy report -> discovery -> dependency map -> transformation map -> migration spec`
 
 ### V2 — Secure the workflow
 
-Once AI was reading enterprise information, access control became a first-class problem.
+Once AI is working with enterprise information, the first production concern is access.
 
-The security boundary stays in the application rather than the model. Identity and RBAC determine what the caller is allowed to access before an AI or tool request is executed.
+The application enforces identity and **RBAC** before AI or tool calls are allowed. PII scanning and redaction can be applied before information enters an AI processing path. Tool access is exposed through an allow-list rather than unrestricted model access.
 
-The design also considers:
-
-- PII detection and redaction
-- approved model endpoints
-- secret management
-- controlled tool/data access
-- input/output guardrails
-- audit-friendly request paths
-
-`identity -> authorization -> allowed operation -> AI/tool request`
+`identity -> authorization -> PII check -> allowed operation -> AI/tool`
 
 ### V3 — Evaluate and improve performance
 
-The next questions were whether the AI was actually helping and whether users could work with the system quickly enough.
+The workflow needs evidence that the AI is useful and that the final system behaves correctly.
 
-For the AI side, **RAGAS** is used to evaluate retrieval and answer quality as prompts, models, chunking, and search settings change. Metrics include context recall, answer relevance, and faithfulness.
+**RAGAS** is used for retrieval/answer evaluation across changes to prompts, models, chunking, and search settings. The migration itself uses deterministic reconciliation for row counts, aggregates, measures, filters, and distinct counts.
 
-For the migration side, deterministic reconciliation checks compare source and target values such as row counts, aggregates, measures, filters, and distinct counts.
+Latency is treated as a full request-path problem:
 
-Latency is considered across the full path:
+`request -> retrieval -> context -> model -> response`
 
-`request -> retrieval -> context construction -> model call -> response delivery`
-
-Caching and **SSE streaming** were used as part of the performance work, with an improvement of approximately **250 ms at P95** in the workload described here.
+Caching and **SSE streaming** are part of the performance approach; the workload described here saw approximately **250 ms improvement at P95**.
 
 ## Working VS Code demo
 
-The `demo/` folder shows how the migration can be split into small agents and deterministic checks. It is intentionally runnable without an Azure subscription, while also supporting Azure OpenAI when environment variables are configured.
+The `demo/` folder now shows a fuller orchestration pattern. Some components are deterministic by design; the migration interpretation step can use Azure OpenAI when configured and falls back to local rules so the project still runs in VS Code without credentials.
 
-### Agent flow
+### Agents and controls
+
+| Component | Responsibility | AI or deterministic |
+|---|---|---|
+| Discovery Agent | Inventory sources, calculations, filters, transformations and dependencies | Deterministic |
+| Planner Agent | Estimate migration complexity and prioritize work | Deterministic in demo |
+| Migration Agent | Interpret legacy expressions and propose target-layer mappings | LLM + deterministic fallback |
+| Security Agent | Enforce role/scope permissions before operations | Deterministic |
+| PII Agent | Detect likely sensitive field names before AI processing | Deterministic |
+| Similarity Agent | Find repeated calculations that may be reusable | Deterministic |
+| Evaluation Agent | Apply confidence and review thresholds | Deterministic |
+| MCP Tool Registry | Allow-list the operations an agent could request | Deterministic |
+| Reconciliation | Compare source and target values | Deterministic |
+
+### Demo flow
 
 ```text
-Legacy report JSON
-        |
-        v
+Legacy Report
+     |
+     v
+Discovery Agent
+     |
+     v
+Planner Agent
+     |
+     v
 Migration Agent
-  - inventory
-  - interpret expressions
-  - propose target layer
-        |
-        v
-Security Agent
-  - identity / role
-  - scope check
-  - allow / deny
-        |
-        v
-Evaluation Agent
-  - confidence floor
-  - review flags
-        |
-        v
-Deterministic Reconciliation
-  - row counts
-  - aggregates
-        |
-        v
-READY / HUMAN REVIEW
+  + proposes mappings
+  + returns confidence
+     |
+     +------------------+
+     |                  |
+     v                  v
+PII Agent          Security Agent
+     |                  |
+     +---------+--------+
+               |
+               v
+       Evaluation Agent
+               |
+          +----+----+
+          |         |
+        PASS       REVIEW
+          |
+          v
+     MCP Tool Layer
+          |
+          v
+ Fabric / Power BI Work
+          |
+          v
+ Deterministic Reconciliation
+          |
+      +---+---+
+      |       |
+    PASS    REVIEW
 ```
 
-### Run locally in VS Code
+The point of the design is **not** to create as many agents as possible. Reasoning tasks go to the model; guarantees stay in code.
+
+## What can be automated in a real migration
+
+A production implementation can extend the demo in these directions:
+
+1. **Source Discovery:** automatically build a dependency graph from report metadata and data-source definitions.
+2. **Transformation Mapping:** classify each legacy calculation as Fabric transformation, semantic-model measure, report filter, or human-review case.
+3. **Report Similarity:** detect repeated business logic across reports and create reusable transformations or measures.
+4. **Migration Planning:** score reports by dependencies, transformation count, complexity, and risk to create a migration queue.
+5. **PII Classification:** scan fields and sample values, redact protected fields, and record why data was excluded from an AI call.
+6. **Human Review Queue:** route low-confidence or security-sensitive mappings to an approval step and resume the workflow after a decision.
+7. **Regression Evaluation:** run reconciliation and RAGAS checks automatically on prompt/model/retrieval changes.
+8. **Cost Routing:** send simple interpretation jobs to smaller models and reserve higher-cost models for complex cases.
+9. **MCP Tooling:** expose controlled actions such as `list_report_dependencies`, `get_transformation`, `validate_report`, and `submit_for_review` behind authorization.
+10. **Performance Monitoring:** track P50/P95/P99 latency, token usage, cache hits, and model cost over time.
+
+These are engineering extensions of the same core workflow; the public demo intentionally keeps the data synthetic and the external system integrations mocked or represented by small local interfaces.
+
+## Run locally in VS Code
 
 ```bash
-cd demo
+cd projects/ai-assisted-bi-migration/demo
 python -m venv .venv
 
 # Windows
@@ -106,57 +134,57 @@ pip install -r requirements.txt
 python -m demo.app
 ```
 
-The demo works in fallback mode with no API credentials. To run the migration analysis through Azure OpenAI, copy `.env.example` to `.env`, fill in the Azure settings, and export/load those variables before starting the app.
-
-The important design choice is the same as the larger migration: the LLM proposes an interpretation, while authorization and acceptance remain outside the model.
+The demo runs without Azure credentials using deterministic fallback logic. To enable Azure OpenAI mode, copy `.env.example` to `.env` and provide the endpoint, key, and deployment.
 
 ## Target architecture
 
 ```text
-Legacy Spotfire Reports
-          |
-          v
-   Inventory + Parsing
-          |
-     +----+----+
-     |         |
-     v         v
-Deterministic  LLM-assisted
-Analysis       Interpretation
-     |         |
-     +----+----+
-          |
-          v
-    Migration Spec
-          |
-          v
+81 Legacy Spotfire Reports
+            |
+            v
+    Discovery / Inventory
+            |
+      +-----+-----+
+      |           |
+      v           v
+Deterministic   LLM-assisted
+analysis        interpretation
+      |           |
+      +-----+-----+
+            |
+            v
+      Migration Plan
+            |
+     Security + PII
+            |
+            v
       Human Review
-          |
-          v
- Fabric Transformation
-          |
-          v
-   Curated Data Layer
-          |
-          v
- Power BI Semantic Model
-          |
-          v
-     Power BI Report
-          |
-          v
-      Validation
-       /       \
-     PASS     REVIEW
+            |
+            v
+   Fabric Transformations
+            |
+            v
+      Curated Data
+            |
+            v
+    Power BI Semantic Model
+            |
+            v
+       Power BI Report
+            |
+            v
+ Validation + Evaluation
+            |
+       +----+----+
+       |         |
+      PASS     REVIEW
 ```
 
-## What the project demonstrates
+## Core engineering principle
 
-The core idea is simple:
+> **Use agents where the problem requires interpretation. Use deterministic services where the system needs guarantees.**
 
-> **Turn 81 individual migrations into one repeatable engineering workflow with 81 inputs.**
-
-AI is one part of the system. The useful outcome comes from combining AI-assisted interpretation with data engineering, RBAC, PII controls, evaluation, deterministic validation, performance work, and human review.
+The project is deliberately closer to an engineering workflow than a generic multi-agent chatbot. The interesting part is how AI is placed inside an existing enterprise migration process without giving the model authority over permissions, correctness, or release decisions.
 
 ## Repository structure
 
