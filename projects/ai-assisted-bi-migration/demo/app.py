@@ -3,8 +3,16 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from .agents import EvaluationAgent, MigrationAgent, SecurityAgent
-
+from .agents import (
+    DiscoveryAgent,
+    EvaluationAgent,
+    MCPToolRegistry,
+    MigrationAgent,
+    PIIAgent,
+    PlannerAgent,
+    SecurityAgent,
+    SimilarityAgent,
+)
 
 ROOT = Path(__file__).resolve().parent
 load_dotenv(ROOT / ".env")
@@ -15,53 +23,64 @@ def reconcile(source: dict, target: dict) -> list[dict]:
     for key in ("row_count", "revenue"):
         source_value = source.get(key)
         target_value = target.get(key)
-        checks.append(
-            {
-                "name": key,
-                "source": source_value,
-                "target": target_value,
-                "status": "PASS" if source_value == target_value else "REVIEW",
-            }
-        )
+        checks.append({
+            "name": key,
+            "source": source_value,
+            "target": target_value,
+            "status": "PASS" if source_value == target_value else "REVIEW",
+        })
     return checks
+
+
+def run_report(report: dict) -> dict:
+    discovery = DiscoveryAgent()
+    planner = PlannerAgent()
+    pii = PIIAgent()
+    migration = MigrationAgent()
+    security = SecurityAgent()
+    evaluation = EvaluationAgent()
+    tools = MCPToolRegistry()
+
+    inventory = discovery.inspect(report)
+    plan = planner.plan(inventory)
+    pii_result = pii.scan(report)
+    spec = migration.analyze(report)
+    security_result = security.authorize("migration-engineer", "sample-data")
+    eval_result = evaluation.review(spec)
+    tool_result = tools.invoke("get_transformation", "migration-engineer")
+    checks = reconcile({"row_count": 100000, "revenue": 1250000}, {"row_count": 100000, "revenue": 1249997})
+
+    return {
+        "inventory": inventory,
+        "plan": plan,
+        "pii": pii_result,
+        "migration_spec": spec.__dict__,
+        "security": security_result,
+        "evaluation": eval_result,
+        "tool": tool_result,
+        "reconciliation": checks,
+    }
 
 
 def main() -> None:
     report_path = ROOT / "sample_report.json"
     report = json.loads(report_path.read_text(encoding="utf-8"))
+    print("=== LEGACY BI MIGRATION DEMO ===")
+    print("AI analysis mode:", "Azure OpenAI" if MigrationAgent().llm_enabled else "local deterministic fallback")
 
-    migration_agent = MigrationAgent()
-    security_agent = SecurityAgent()
-    evaluation_agent = EvaluationAgent()
+    result = run_report(report)
+    print(json.dumps(result, indent=2))
 
-    mode = "Azure OpenAI" if migration_agent.llm_enabled else "local deterministic fallback"
-    print(f"AI analysis mode: {mode}")
+    print("\n=== SIMILARITY / REUSE CHECK ===")
+    similar = SimilarityAgent().compare([report, report | {"report_id": "sales-overview-copy"}])
+    print(json.dumps(similar, indent=2))
 
-    print("\n=== 1. MIGRATION ANALYSIS AGENT ===")
-    spec = migration_agent.analyze(report)
-    print(json.dumps(spec.__dict__, indent=2))
-
-    print("\n=== 2. SECURITY AGENT ===")
-    allowed = security_agent.authorize("migration-engineer", "sample-data")
-    denied = security_agent.authorize("viewer", "sample-data")
-    print("Allowed request:", json.dumps(allowed, indent=2))
-    print("Denied request:", json.dumps(denied, indent=2))
-
-    print("\n=== 3. EVALUATION AGENT ===")
-    evaluation = evaluation_agent.review(spec)
-    print(json.dumps(evaluation, indent=2))
-
-    print("\n=== 4. DETERMINISTIC RECONCILIATION ===")
-    checks = reconcile(
-        {"row_count": 100000, "revenue": 1250000},
-        {"row_count": 100000, "revenue": 1249997},
+    needs_review = (
+        result["evaluation"]["requires_human_review"]
+        or result["pii"]["pii_detected"]
+        or any(c["status"] == "REVIEW" for c in result["reconciliation"])
     )
-    print(json.dumps(checks, indent=2))
-
     print("\n=== DECISION ===")
-    needs_review = evaluation["requires_human_review"] or any(
-        c["status"] == "REVIEW" for c in checks
-    )
     print("HUMAN REVIEW REQUIRED" if needs_review else "READY FOR MIGRATION")
 
 
